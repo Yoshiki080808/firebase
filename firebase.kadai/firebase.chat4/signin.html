@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="./css/login.css">
+    <title>login</title>
+</head>
+<body>
+    <!-- ログインフォーム -->
+    <div class="form-wrapper">
+        <h1>Sign In</h1>
+        <!-- <form> -->
+          <div class="form-item">
+            <label for="email"></label>
+            <input id="email" type="email" name="email" required="required" placeholder="Email Address"></input>
+          </div>
+          <div class="form-item">
+            <label for="password"></label>
+            <input id="password" type="password" name="password" required="required" placeholder="Password"></input>
+          </div>
+          <div class="button-panel">
+            <input id="signin_btn" type="submit" class="button" title="Sign In" value="Sign In"></input>
+            <div id="error"></div>
+          </div>
+        <!-- </form> -->
+        <div class="form-footer">
+          <p><a href="create.html">Create an account</a></p>
+          <p><a href="#">Forgot password?</a></p>
+        </div>
+      </div>
+      <!-- ログインフォーム -->
+   
+        <!-- JQuery -->
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+        <!-- JQuery -->
+
+        <!--** 以下Firebase **-->
+    <script type="module">
+        // Import the functions you need from the SDKs you need
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/9.8.1/firebase-app.js";
+        import { getDatabase, ref, push, set, onChildAdded, remove, onChildRemoved } 
+        from "https://www.gstatic.com/firebasejs/9.8.1/firebase-database.js";
+        import { getAuth, signInWithPopup, onAuthStateChanged, signInAnonymously, GoogleAuthProvider, createUserWithEmailAndPassword, signInWithEmailAndPassword} from "https://www.gstatic.com/firebasejs/9.8.1/firebase-auth.js"
+        // TODO: Add SDKs for Firebase products that you want to use
+        // https://firebase.google.com/docs/web/setup#available-libraries
+      
+        // Your web app's Firebase configuration
+        const firebaseConfig = {
+
+        };
+    
+        // Initialize Firebase
+        const app = initializeApp(firebaseConfig);// 最初にfirebase使う準備
+        const db = getDatabase(app);// RealTimeDB使うよ
+        // ここで、dbのどこから何のデータを取ってくるのかを考える
+        const dbRef = ref(db,"idea");// RTDB内の"idea"内のデータをdbRefとする
+        const auth = getAuth();// どんなユーザーがログインしているのか？情報が入っている
+
+        // 実際のredisterUser関数の処理
+        const loginUser = function () {
+            const $email = document.getElementById("email");
+            const $password = document.getElementById("password");// idで指定されたHTMLオブジェクト全体を取ってくる処理
+            const email = $email.value;
+            const password = $password.value; // inputで入力した要素を取得するための処理
+            signInWithEmailAndPassword(auth, email, password)
+            .then((userCredential) => {
+              $email.value = "";
+              $password.value = ""; // input要素を空にするための処理
+              alert('you succcessfully log in to your account!')
+              location.href = 'index.html';
+              
+            })
+            .catch(() => {
+              $("#error").html('email、もしくはパスワードが間違っています');
+            });
+        }
+
+        // #create_btnをクリックしたときにresisterUserの動作が起こる関数
+        $("#signin_btn").on("click",function(){
+            loginUser();
+        });
+
+    </script>
+</body>
+</html>
